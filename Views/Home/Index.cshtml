@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    var culture = System.Globalization.CultureInfo.CurrentCulture.ToString();
+}
+
+<script type="text/javascript">
+    //set the Kendo UI culture
+    kendo.culture("@culture");
+</script>
+
+<div style="display:flex; margin-right: 10px">
+    <div style="margin-right: 5px; margin-top: 4px">Culture:</div>
+    <div style="width: 200px; margin-bottom: 30px ">
+        @(Html.Kendo().DropDownList()
+            .Name("culture")
+            .BindTo(new[] { "en-US", "de-DE", "fr-FR", "es-ES" })
+            .Events(ev => ev.Change("cultureChange"))
+        )
+    </div>
+</div>
+
+
+<div>
+    @(Html.Kendo().PanelBar()
+                                            .Name("IntroPanelBar")
+                                            .Items(items =>
+                                            {
+                                                items.Add()
+                                                    .Text("ASP.NET Core")
+                                                    .Selected(true)
+                                                    .Expanded(true)
+                                                    .Content(@<text>
+                                                        <p style="padding:1em 2em">
+                                                            Learn how to build ASP.NET apps that can run anywhere.
+                                                            <a target="_blank" href="http://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">Learn More</a>
+                                                        </p>
+                                                    </text>);
+                                                        items.Add()
+            .Text("Visual Studio")
+            .Content(@<text>
+                <p style="padding:1em 2em">
+                    There are powerful new features in Visual Studio for building modern web apps.
+                    <a target="_blank" href="http://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">Learn More</a>
+                </p>
+            </text>);
+                                            items.Add()
+.Text("Package Management")
+.Content(@<text>
+    <p style="padding:1em 2em">
+        Bring in libraries from NuGet, Bower, and npm, and automate tasks using Grunt or Gulp.
+        <a target="_blank" href="http://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">Learn More</a>
+    </p>
+</text>);
+                                        })
+    )
+</div>
+
+
+<script type="text/javascript">
+    var href = window.location.href;
+    if (href.indexOf('culture') > -1) {
+        debugger;
+        $('#culture').val(href.replace(/(.*)culture=([^&]*)/, '$2'));
+    }
+    function cultureChange(e) {
+        var value = this.value();
+        if (href.indexOf('culture') > -1) {
+            href = href.replace(/culture=([^&]*)/, 'culture=' + value);
+        } else {
+            href += href.indexOf('?') > -1 ? '&culture=' + value : '?culture=' + value;
+        }
+        window.location.href = href;
+    }
+</script>

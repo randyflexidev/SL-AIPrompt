@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SL-AIPrompt": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:57897;http://localhost:57898"
+    }
+  }
+}
