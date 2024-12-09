@@ -1,77 +1,254 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="demo-wrapper k-d-grid k-gap-8 k-flex-1 k-px-8 k-pt-7">
+    <div data-role="skeletoncontainer" class="side-container k-skeleton k-opacity-20 !k-d-flex k-flex-col k-align-items-center k-px-5 k-pt-7.5 k-rounded-tl-md k-rounded-tr-md" aria-live="polite" aria-label="Loading...">
+        <div class="k-d-flex k-flex-col k-w-full k-gap-4">
+            <div class="k-skeleton k-opacity-90 k-rounded-md k-h-2.5"></div>
+            <div class="k-skeleton k-opacity-90 k-rounded-md k-h-2.5"></div>
+            <div class="k-skeleton k-opacity-90 k-rounded-md k-h-2.5"></div>
+        </div>
+    </div>
 
-@{
-    var culture = System.Globalization.CultureInfo.CurrentCulture.ToString();
-}
+    <div class="main-container k-pb-8 k-d-flex k-flex-col">
+        <div class="k-d-flex k-gap-3 k-align-items-center kd-m-b">
+            <span class="avatar !k-d-none k-skeleton k-opacity-30 k-skeleton-circle k-w-12 k-h-12"></span>
+            <h4 class="k-h4 k-opacity-20 k-font-bold">New E-mail</h4>
+        </div>
+        <div class="k-d-flex k-flex-col k-grow k-gap-1 k-mt-3">
+            <span class="k-skeleton k-opacity-40 k-rounded-md k-w-24 k-px-3 k-h-4"></span>
+            <span class="content-expanded k-grow k-skeleton k-opacity-30 k-rounded-md k-h-8"></span>
+            <span class="content-expanded k-grow k-skeleton k-opacity-30 k-rounded-md k-h-8"></span>
+        </div>
+        <span class="k-d-inline-block">Message body</span>
 
-<script type="text/javascript">
-    //set the Kendo UI culture
-    kendo.culture("@culture");
-</script>
+        @(Html.Kendo().TextArea()
+            .Name("textarea")
+            .Rows(10)
+            )
 
-<div style="display:flex; margin-right: 10px">
-    <div style="margin-right: 5px; margin-top: 4px">Culture:</div>
-    <div style="width: 200px; margin-bottom: 30px ">
-        @(Html.Kendo().DropDownList()
-            .Name("culture")
-            .BindTo(new[] { "en-US", "de-DE", "fr-FR", "es-ES" })
-            .Events(ev => ev.Change("cultureChange"))
-        )
+        @(Html.Kendo().FloatingActionButton()
+            .Name("fab")
+            .Icon("x")
+            .PositionMode(FloatingActionButtonPositionMode.Absolute)
+            .AlignOffset(alignOffset => alignOffset.Horizontal(45).Vertical(65))
+            .ThemeColor(FloatingActionButtonThemeColor.Primary)
+            .Size(FloatingActionButtonSize.Medium)
+            .Events(events => events.Click("onClick"))
+            )
+    </div>
+
+    <div id="aiPopup">
+        <div id="aiprompt"></div>
+        @(
+            Html.Kendo().AIPrompt()
+            .Name("aiprompt")
+            .ActiveView(0)
+            .Events(ev => ev.CommandExecute("onCommandExecute").PromptRequest("onPromptRequest"))
+            .ToolbarItems(items =>
+            {
+                items.Add().Type(ItemType.Spacer);
+                items.Add().Type(ItemType.Button).Icon("x").FillMode(ButtonFillMode.Flat).Rounded(Rounded.Full).ThemeColor(ThemeColor.Primary).Click("onToolbarButtonClick");
+            })
+            .Views(views =>
+            {
+                views.Add().Type(ViewType.Prompt)
+                .PromptSuggestions(new string[] { "Out of office (contact colleague)", "Out of office (contact me)", "LinkedIn post for work/life balance and well-being", "LinkedIn post for work/life balance and mental health" });
+                views.Add().Type(ViewType.Output);
+                views.Add().Type(ViewType.Commands)
+                .PromptCommands(commands =>
+                {
+                    commands.Add().Id("1").Text("Change Formality").Icon("brush")
+                .Items(i =>
+                {
+                    i.Add().Id("1_1").Text("Casual");
+                    i.Add().Id("1_2").Text("Neutral");
+                    i.Add().Id("1_3").Text("Formal");
+                });
+                    commands.Add().Id("2").Text("Translate").Icon("edit-tools")
+                .Items(i =>
+                {
+                    i.Add().Id("2_1").Text("German");
+                    i.Add().Id("2_2").Text("Spanish");
+                    i.Add().Id("2_3").Text("English");
+                });
+                    commands.Add().Id("3").Text("Simplify").Icon("min-width");
+                    commands.Add().Id("4").Text("Extend").Icon("arrows-left-right");
+                });
+            })
+            )
     </div>
 </div>
 
+<script src="~/shared/prompt-data.js"></script>
 
-<div>
-    @(Html.Kendo().PanelBar()
-                                            .Name("IntroPanelBar")
-                                            .Items(items =>
-                                            {
-                                                items.Add()
-                                                    .Text("ASP.NET Core")
-                                                    .Selected(true)
-                                                    .Expanded(true)
-                                                    .Content(@<text>
-                                                        <p style="padding:1em 2em">
-                                                            Learn how to build ASP.NET apps that can run anywhere.
-                                                            <a target="_blank" href="http://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">Learn More</a>
-                                                        </p>
-                                                    </text>);
-                                                        items.Add()
-            .Text("Visual Studio")
-            .Content(@<text>
-                <p style="padding:1em 2em">
-                    There are powerful new features in Visual Studio for building modern web apps.
-                    <a target="_blank" href="http://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">Learn More</a>
-                </p>
-            </text>);
-                                            items.Add()
-.Text("Package Management")
-.Content(@<text>
-    <p style="padding:1em 2em">
-        Bring in libraries from NuGet, Bower, and npm, and automate tasks using Grunt or Gulp.
-        <a target="_blank" href="http://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">Learn More</a>
-    </p>
-</text>);
-                                        })
-    )
-</div>
+<script>
+    $(document).ready( function () {
+        var popup = $("#aiPopup").kendoPopup({
+            animation: false,
+            close: onPopupClose,
+            anchor: $("#fab"),
+            position: "top right"
+        }).data("kendoPopup").open();
+    });
 
-
-<script type="text/javascript">
-    var href = window.location.href;
-    if (href.indexOf('culture') > -1) {
-        debugger;
-        $('#culture').val(href.replace(/(.*)culture=([^&]*)/, '$2'));
+    function onPopupClose() {
+        let floatingActionButton = $("#fab").data("kendoFloatingActionButton");
+        floatingActionButton.icon("sparkles");
     }
-    function cultureChange(e) {
-        var value = this.value();
-        if (href.indexOf('culture') > -1) {
-            href = href.replace(/culture=([^&]*)/, 'culture=' + value);
-        } else {
-            href += href.indexOf('?') > -1 ? '&culture=' + value : '?culture=' + value;
+
+    function onCommandExecute(ev) {
+        if (this.promptOutputs.length > 0) {
+            let output = this.promptOutputs[0].prompt;
+            const response = promptData.find((s) => s.suggestion === output);
+            if (response) {
+                let result = {
+                    id: kendo.guid(),
+                    output: response[ev.item.text.toLowerCase()],
+                    prompt: output,
+                    isRetry: ev.isRetry
+                };
+                this.addPromptOutput(result);
+                $("#textarea").data("kendoTextArea").value(result.output);
+            }
         }
-        window.location.href = href;
+    }
+
+    function onPromptRequest(ev) {
+        const defaultResponse = "I'm sorry, I couldn't process your request at the moment.";
+
+        $.ajax({
+            type: "POST",
+            url: "/api/ai/generate",
+            contentType: "application/json;",
+            data: JSON.stringify(ev.prompt),
+            dataType: "json",
+            success: (response) => {
+                const output = {
+                    id: kendo.guid(),
+                    output: response?.message || defaultResponse,
+                    prompt: ev.prompt,
+                    isRetry: ev.isRetry,
+                };
+
+                this.addPromptOutput(output);
+                this.activeView(1);
+                $("#textarea").data("kendoTextArea").value(output.output);
+            },
+            error: () => {
+                const errorOutput = {
+                    id: kendo.guid(),
+                    output: defaultResponse,
+                    prompt: ev.prompt,
+                    isRetry: ev.isRetry,
+                };
+
+                this.addPromptOutput(errorOutput);
+                this.activeView(1);
+            },
+        });
+    }
+
+    function onToolbarButtonClick(e) {
+        let popup = $("#aiPopup").data("kendoPopup");
+        let floatingActionButton = $("#fab").data("kendoFloatingActionButton");
+        popup.close();
+        floatingActionButton.icon("sparkles");
+    }
+
+    function onClick(e) {
+        let popup = $("#aiPopup").data("kendoPopup");
+        if ($("#aiPopup").is(":visible")) {
+            popup.close();
+            e.sender.icon("sparkles");
+        } else {
+            popup.open();
+            e.sender.icon("x");
+        }
     }
 </script>
+
+<style>
+    .k-skeleton {
+        background-color: rgba(33, 37, 41, 0.4) !important;
+    }
+
+    #fab {
+        z-index: 10000;
+        margin-left: auto;
+    }
+
+    .demo-wrapper {
+        grid-template-columns: 180px 1fr;
+    }
+
+    .k-h4 {
+        line-height: 26px;
+        margin-bottom: 0;
+    }
+
+    .kd-nodata-wrapper {
+        display: block !important;
+        padding-top: 20px !important;
+    }
+
+    .kd-m-b {
+        margin-bottom: 17px;
+    }
+
+    /* Breakpoints for full screen demo: max:599px, min:759px and max: 959 */
+    @@media (max-width: 678px), (min-width: 821px) and (max-width: 1038px), (min-width: 1241px) and (max-width: 1328px) {
+        .demo-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .avatar {
+            display: block !important;
+        }
+
+        .side-container {
+            display: none !important;
+        }
+
+        .main-container {
+            padding-bottom: 0;
+        }
+
+        .content-expanded {
+            border-end-end-radius: 0;
+            border-end-start-radius: 0;
+        }
+    }
+
+    /* Breakpoint for full screen demo: max:359px */
+    @@media (max-width: 476px) {
+        .avatar {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    .k-prompt {
+        width: 370px !important;
+        max-height: 470px;
+        height: 450px;
+    }
+
+    .k-popup .k-prompt .k-card-subtitle {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .k-popup .k-prompt .k-card-body {
+        white-space: pre-line;
+    }
+
+    .demo-wrapper {
+        position: relative;
+        margin: auto;
+        padding: 32px;
+        width: 780px;
+        height: 490px;
+        gap: 32px;
+        border-radius: 4px 4px 0 0;
+        box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.08);
+    }
+</style>

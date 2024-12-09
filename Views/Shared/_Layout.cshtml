@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SL_AIPrompt</title>
+    <title>Demo - SL_AIPrompt</title>
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
@@ -22,7 +22,7 @@
 	<script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
 	<script src="https://cdn.kendostatic.com/2024.4.1112/js/kendo.all.min.js"></script>
 	<script src="https://cdn.kendostatic.com/2024.4.1112/js/kendo.aspnetmvc.min.js"></script>
-@*Core Content End*@
+    @*Core Content End*@
         @{
         var culture = System.Globalization.CultureInfo.CurrentCulture.ToString();
         var path = Url.Content("~/lib/kendo-ui/js/messages/kendo.messages." + culture + ".min.js");
@@ -36,19 +36,6 @@
             <div class="navbar-header">
                 <kendo-button name="configure" tag="button" icon="menu" theme-color="ThemeColor.Primary" class="k-rpanel-toggle btn-toggle"></kendo-button>
                 <a asp-controller="Home" asp-action="Index" class="navbar-brand">Your .NET Core Application</a>
-            </div>
-            <div id="responsive-panel" class="navbar-left">
-                <kendo-responsivepanel name="responsive-panel" auto-close="false" breakpoint="768" orientation="top">
-                    @(Html.Kendo().Menu()
-                        .Name("Menu")
-                        .Items(items =>
-                        {
-                            items.Add().Text("Home").Action("Index", "Home", new { area = "" });
-                            items.Add().Text("About").Action("About", "Home", new { area = "" });
-                            items.Add().Text("Contact").Action("Contact", "Home", new { area = "" });
-                        })
-                    )
-                </kendo-responsivepanel>
             </div>
         </div>
     </nav>

@@ -4,9 +4,12 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AZURE_OPENAI_ENDPOINT": "https://openai-flexidev.openai.azure.com",
+        "AZURE_OPENAI_API_KEY": "2rszMmtyuS3FUDkEfgc7XWId6Xv5a2r7pDT5kRSPWtT8Cruk41EXJQQJ99AKACL93NaXJ3w3AAABACOGVEgT"
       },
-      "applicationUrl": "https://localhost:57897;http://localhost:57898"
+      "applicationUrl": "https://localhost:57897;http://localhost:57898",
+      "hotReloadEnabled": false
     }
   }
 }
